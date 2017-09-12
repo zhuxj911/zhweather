@@ -2,9 +2,8 @@ package com.zhweather.android;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
+ * 省市县列表选择
  * Created by zhuxj on 9/11/2017.
  */
 
@@ -52,24 +52,22 @@ public class ChooseAreaFragment extends Fragment {
 
     private Province selectedProvince;
     private City selectedCity;
-    private County selectedCounty;
 
     private int currentLevel;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.choose_area, container, false);
         titleText = view.findViewById(R.id.title_text);
         backButton = view.findViewById(R.id.back_button);
         listView = view.findViewById(R.id.list_view);
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, dataList);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
-        return listView;
+        return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->{
             if (currentLevel == LEVEL_PROVINCE) {
@@ -154,7 +152,7 @@ public class ChooseAreaFragment extends Fragment {
 
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String responseText = response.body().string();
                 boolean result = false;
                 if("province".equals(type)){
@@ -166,9 +164,7 @@ public class ChooseAreaFragment extends Fragment {
                 }
 
                 if(result){
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    getActivity().runOnUiThread( ()-> {
                             closeProgressDialog();
                             if("province".equals(type)){
                                 queryProvinces();
@@ -177,19 +173,15 @@ public class ChooseAreaFragment extends Fragment {
                             }else if("county".equals(type)){
                                 queryCounties();
                             }
-                        }
                     });
                 }
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                getActivity().runOnUiThread( () -> {
                         closeProgressDialog();
                         Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
-                    }
                 });
             }
         });
@@ -197,7 +189,7 @@ public class ChooseAreaFragment extends Fragment {
 
     private void showProgressDialog() {
         if(progressDialog == null){
-            progressDialog = new ProgressDialog(getContext());
+            progressDialog = new ProgressDialog( getActivity() );
             progressDialog.setMessage("正在加载......");
             progressDialog.setCanceledOnTouchOutside(false);
         }
