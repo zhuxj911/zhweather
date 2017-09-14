@@ -57,15 +57,20 @@ public class WeatherActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if(weatherString != null){
+            //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
             showWeatherInfo(weather);
+        }else{
+            //无缓存时去服务器查询天气
+            String weatherId = getIntent().getStringExtra("weather_id");
+            weatherLayout.setVisibility(View.VISIBLE);
+            requestWeather(weatherId);
         }
     }
 
     public void requestWeather(final String weatherId){
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" +
-//                weatherId + "&key=32cd110fbc114657982b2bbe3d501275";
-                weatherId + "&key=bc0418b57b2d4918819d3974ac1285d9";
+                weatherId + "&key=32cd110fbc114657982b2bbe3d501275"; //我的key号
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -95,6 +100,11 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * 处理并展示Weather实体类中的数据
+     * @param weather
+     */
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
@@ -104,6 +114,7 @@ public class WeatherActivity extends AppCompatActivity {
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
+
         forecastLayout.removeAllViews();
         for (Forecast forecast : weather.forecastList) {
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item,
