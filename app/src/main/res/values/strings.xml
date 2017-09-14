@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ZhWeather</string>
+    <string name="app_name">智慧天气</string>
+    <string name="bing_pic_url">http://guolin.tech/api/bing_pic</string>
+    <string name="weather_url">http://guolin.tech/api/weather</string>
+    <string name="weather_key">32cd110fbc114657982b2bbe3d501275</string>
+    <string name="address_url">http://guolin.tech/api/china</string>
 </resources>

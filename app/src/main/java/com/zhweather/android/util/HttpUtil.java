@@ -1,5 +1,7 @@
 package com.zhweather.android.util;
 
+import com.zhweather.android.R;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 

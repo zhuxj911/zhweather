@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
+import com.zhweather.android.R;
 import com.zhweather.android.gson.Weather;
 import com.zhweather.android.util.HttpUtil;
 import com.zhweather.android.util.Utility;
@@ -44,7 +45,8 @@ public class AutoUpdateService extends Service {
     }
 
     private void updateBingPic() {
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
+        String requestBingPic = getString(R.string.bing_pic_url);
+
         HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -66,10 +68,12 @@ public class AutoUpdateService extends Service {
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
             Weather weather = Utility.handleWeatherResponse(weatherString);
-            String weatherId = weather.basic.weatherId;
 
-            String weatherUrl = "http://guolin.tech/api/weather?cityid=" +
-                    weatherId + "&key=32cd110fbc114657982b2bbe3d501275"; //我的key号
+            String weather_url = getString(R.string.weather_url);
+            String weather_key = getString(R.string.weather_key);
+
+            String weatherUrl = weather_url + "?cityid=" + weather.basic.weatherId
+                    + "&key=" + weather_key;
 
             HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
                 @Override

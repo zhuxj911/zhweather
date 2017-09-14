@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -111,7 +110,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void loadBingPic() {
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
+        String requestBingPic = getString(R.string.bing_pic_url);
         HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -132,8 +131,11 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     public void requestWeather(final String weatherId){
-        String weatherUrl = "http://guolin.tech/api/weather?cityid=" +
-                weatherId + "&key=32cd110fbc114657982b2bbe3d501275"; //我的key号
+        String weather_url = getString(R.string.weather_url);
+        String weather_key = getString(R.string.weather_key);
+
+        String weatherUrl = weather_url + "?cityid=" + weatherId
+                + "&key=" + weather_key; //我的key号
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
